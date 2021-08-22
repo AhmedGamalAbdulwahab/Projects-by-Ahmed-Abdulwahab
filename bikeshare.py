@@ -17,19 +17,19 @@ def get_filters():
         (str) day - name of the day of week to filter by, or "all" to apply no day filter
     """
     print('Hello! Let\'s explore some US bikeshare data!')
-    month=0
-    day=0
+    month=''
+    day=''
     
     # TO DO: get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     while True:
-        city = input('Choose one city to analyze between (Chicago, New York or Washington)\n')
-            # TO DO: get user input for month (all, january, february, ... , june)
-        break
+        city = input('Choose one city to analyze between (Chicago, New York or Washington)\n').lower()
+        if city != 'chicago' or 'new york' or 'washington':     
+            break
     month = input('Enter a month name or type (all) for all months\n')
 
     # TO DO: get user input for day of week (all, monday, tuesday, ... sunday)
     day = input('Enter a day of a week or type (all) for all week days\n')
-    if city == 'chicago' or 'new york' or 'washington':
+    
         print('-'*40)
         return city, month, day
 
@@ -127,16 +127,17 @@ def user_stats(df):
 
     # TO DO: Display counts of user types
     print(df['User Type'].value_counts())
-
+    if city != 'washington':
     # TO DO: Display counts of gender
-    print(df['Gender'].value_counts())
-
-    # TO DO: Display earliest, most recent, and most common year of birth
-    print('Earliest birth year is: ' + df['Birth Year'].min() + '\n')
-    print('Most recent birth year is: ' + df['Birth Year'].max() + '\n')
-    print('Most common birth year is: ' + df['Birth Year'].mode()[0] + '\n')
-    print("\nThis took %s seconds." % (time.time() - start_time))
-    print('-'*40)
+        print(df['Gender'].value_counts())
+        # TO DO: Display earliest, most recent, and most common year of birth
+        print('Earliest birth year is: ' + df['Birth Year'].min() + '\n')
+        print('Most recent birth year is: ' + df['Birth Year'].max() + '\n')
+        print('Most common birth year is: ' + df['Birth Year'].mode()[0] + '\n')
+        print("\nThis took %s seconds." % (time.time() - start_time))
+        print('-'*40)
+    else:
+        print('Gender and birth year stats cannot be calculated because Gender does not appear in the dataframe') 
 def display_data(df):
     """Displays data as the user asks."""
     view_data = input("Would you like to view 5 rows of individual trip data? Enter yes or no?")
@@ -158,10 +159,7 @@ def main():
         time_stats(df)
         station_stats(df)
         trip_duration_stats(df)
-        if city != 'washington':
-            user_stats(df)
-        else:
-            print('-' * 40)    
+        user_stats(df)
         display_data(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
