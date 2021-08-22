@@ -7,7 +7,7 @@ CITY_DATA = { 'chicago': 'chicago.csv',
               'washington': 'washington.csv' }
 
 
-def get_filters():
+def get_filters(city, month, day):
     """
     Asks user to specify a city, month, and day to analyze.
     Returns:
@@ -49,7 +49,7 @@ def load_data(city, month, day):
     df = pd.read_csv(CITY_DATA[city])
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['month'] = df['Start Time'].dt.month
-    df['day_of_week'] = df['Start Time'].dt.weekday_name
+    df['day_of_week'] = df['Start Time'].dt.day_name()
     
     if month != 'all':
         months = ['january', 'february', 'march', 'april', 'may', 'june']
@@ -75,7 +75,7 @@ def time_stats(df):
     freq_day = df['day_of_week'].mode()[0]
     print('The most frequent day is: {}\n'.format(freq_day))
 
-    
+    df['hour'] = df['Start Time'].dt.hour
     freq_hour = df['hour'].mode()[0]
     print('The most frequent hour is: {}\n'.format(freq_hour))
 
@@ -98,8 +98,8 @@ def station_stats(df):
     print('The most common end station is: {}\n'.format(common_end))
 
      
-    station_combination = df[['Start Station', 'End Station']].mode()[0]
-    print('The most common start station and end station combined are: {}, {}\n'.format(station_combination[0],station_combination[1]))
+    station_combination = df['Start Station'] + ' till ' + df['End Station']
+    print('The most common start station and end station combined are: {}\n'.format(station_combination.mode()[0]))
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
@@ -111,10 +111,10 @@ def trip_duration_stats(df):
     start_time = time.time()
 
     
-    print('Total travel time is: ' + df['Trip Duration'].sum() + '\n')
+    print('Total travel time is: ' , df['Trip Duration'].sum())
 
     
-    print('Average travel time is: ' + df['Trip Duration'].mean() + '\n')
+    print('Average travel time is: ' , df['Trip Duration'].mean())
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -132,9 +132,9 @@ def user_stats(df):
     else:    
         print('Gender stats cannot be calculated because Gender does not appear in the dataframe')    
     if 'Birth Year' in df:
-        print('Earliest birth year is: ' + df['Birth Year'].min() + '\n')
-        print('Most recent birth year is: ' + df['Birth Year'].max() + '\n')
-        print('Most common birth year is: ' + df['Birth Year'].mode()[0] + '\n')
+        print('Earliest birth year is: ' , df['Birth Year'].min())
+        print('Most recent birth year is: ' , df['Birth Year'].max())
+        print('Most common birth year is: ' , df['Birth Year'].mode()[0])
         print("\nThis took %s seconds." % (time.time() - start_time))
         print('-'*40)
     else:
@@ -154,8 +154,11 @@ def display_data(df):
 
 
 def main():
+    city = ""
+    month = ""
+    day = ""    
     while True:
-        city, month, day = get_filters()
+        city, month, day = get_filters(city, month, day)
         df = load_data(city, month, day)
 
         time_stats(df)
