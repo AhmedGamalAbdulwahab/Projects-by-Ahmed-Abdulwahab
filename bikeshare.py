@@ -26,10 +26,10 @@ def get_filters():
             continue   
         else:
             break
-    month = input('Enter a month name or type (all) for all months\n')
+    month = input('Enter a month name or type (all) for all months\n').lower() 
 
     
-    day = input('Enter a day of a week or type (all) for all week days\n')
+    day = input('Enter a day of a week or type (all) for all week days\n').lower() 
     
     print('-'*40)
     return city, month, day
